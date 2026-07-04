@@ -31,7 +31,6 @@ graph TD
     AuthAPI -->|401/Error: Display Message| LoginView
     
     FetchDashboard -->|GET + Bearer Token| ReferralsAPI[GET /api/referrals]
-    FetchDetail -->|GET + Bearer Token| ReferralsAPI
     
     %% Table actions
     FetchDashboard -->|Search Query / Date Sort| ReferralsAPI
