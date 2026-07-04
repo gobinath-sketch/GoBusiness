@@ -47,7 +47,7 @@ graph TD
 
 ---
 
-## 🛠️ Technology Stack & Design Systems
+## Technology Stack & Design Systems
 
 *   **Core Engine**: React 19 (scaffolded via Vite)
 *   **Routing**: React Router v7 (declarative route hierarchies)
