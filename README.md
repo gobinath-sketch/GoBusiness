@@ -1,94 +1,147 @@
-# Go Business Referral Dashboard
-
-A secure, responsive, and intuitive referral management system built for Go Business. This dashboard allows authenticated partners to track their referrals, analyze earnings, check active service summaries, share referral links and codes, and search, sort, and paginate the referral partner list.
-
-## 🚀 Features
-
-- **Cookie-Based Route Protection**: Secures the dashboard and detail pages via a `jwt_token` cookie. Unauthenticated users are redirected to `/login`, and authenticated users are redirected to `/`.
-- **State-of-the-Art Theme**: Premium styling system built with custom CSS variables supporting responsive layouts, elegant interactive hover states, card shadows, and automatic dark/light mode adjustment.
-- **Robust Authentication**: Integrates directly with the authentication POST API. Displays clear failure state messages and handles empty or partial fields gracefully.
-- **Overview Metrics**: Displays a summary grid of critical stats loaded dynamically from the referrals REST API.
-- **Service Summary**: Visualizes active referrals and total earnings statistics per service category.
-- **Referral Sharing panel**: Features read-only links and codes with clickable "Copy" buttons.
-- **All Referrals Table**: 
-  - Real-time backend API integration for search query filtering.
-  - Date sort selector (descending/ascending).
-  - Client-side pagination (10 rows per page, numbered page actions).
-  - Currency and date formatting (USD with no decimals, YYYY/MM/DD dates).
-  - Navigable rows redirecting to single partner records.
-- **Referral Detail Page**: Fetches single rows by ID and displays complete partner metrics. Includes a fallback layout if a referral is missing.
+# Go Business — Referral Dashboard
+An enterprise-grade, secure, and responsive referral management portal built for Go Business. This web application tracks partner referrals, service breakdowns, total earnings, and shareable referral links/codes.
 
 ---
 
-## 🛠️ Technology Stack
+## 🗺️ System Flow & Architecture
 
-- **Framework**: React 19 (via Vite)
-- **Routing**: React Router v7
-- **Cookie Management**: JS Cookie
-- **Icons**: Lucide React
-- **Styling**: Vanilla CSS (Premium Slate & Indigo system)
+Below is the high-level architecture diagram detailing the user session flow, route protection guards, and backend API interactions:
+
+```mermaid
+graph TD
+    %% Routing and User Flows
+    User[User Agent] -->|Access Route| Router{React Router v7}
+    
+    %% Route Guard Decisions
+    Router -->|Public: /login| LoginView[Login Page]
+    Router -->|Protected: / or /referral/:id| CheckCookie{Has jwt_token?}
+    Router -->|Public Fallback: *| NotFoundView[404 - Page Not Found]
+    
+    %% Redirection Logic
+    CheckCookie -->|No| RedirectLogin[Redirect to /login]
+    CheckCookie -->|Yes| NavbarWrapper[Render Navbar + Page View]
+    
+    %% Dashboard Functionality
+    NavbarWrapper -->|Dashboard: /| FetchDashboard[Fetch Overview, Summary & Referrals]
+    NavbarWrapper -->|Details: /referral/:id| FetchDetail[Fetch Single Partner by ID]
+    
+    %% API Interactions
+    LoginView -->|Submit Credentials| AuthAPI[POST /api/auth/signin]
+    AuthAPI -->|200 OK: Set Cookie| RedirectHome[Redirect to /]
+    AuthAPI -->|401/Error: Display Message| LoginView
+    
+    FetchDashboard -->|GET + Bearer Token| ReferralsAPI[GET /api/referrals]
+    FetchDetail -->|GET + Bearer Token| ReferralsAPI
+    
+    %% Table actions
+    FetchDashboard -->|Search Query / Date Sort| ReferralsAPI
+    FetchDashboard -->|Client-side pagination| PageSlice[Slice array to 10-row pages]
+    
+    %% Styling and colors
+    style User fill:#f8fafc,stroke:#4f46e5,stroke-width:2px
+    style Router fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px
+    style CheckCookie fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style AuthAPI fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style ReferralsAPI fill:#d1fae5,stroke:#059669,stroke-width:2px
+```
+
+---
+
+## 🛠️ Technology Stack & Design Systems
+
+*   **Core Engine**: React 19 (scaffolded via Vite)
+*   **Routing**: React Router v7 (declarative route hierarchies)
+*   **Session Management**: JS Cookie (local storage container validation)
+*   **UI Components & Icons**: Lucide React
+*   **Styling**: Vanilla CSS (Slate & Indigo system)
+    *   Responsive layouts (flexbox grids, media queries)
+    *   Premium shadows (`--shadow-lg`, `--shadow-glow`)
+    *   System font families (`Outfit` & `Inter`)
+    *   Glassmorphism card interfaces
+    *   Automatic light/dark mode styling
+
+---
+
+## 🏗️ Design Patterns & Implementation Choices
+
+### 1. Route Security Guards (`src/components/ProtectedRoute.jsx`)
+Authenticates requests before rendering protected layouts. Redirects to `/login` if `jwt_token` is not found. Similarly, redirects authenticated users visiting `/login` back to the home page `/`.
+
+### 2. Debounced API Requests
+To avoid unnecessary network traffic when typing in the search box, the search query is debounced for `300ms` before triggering a new GET request:
+```javascript
+useEffect(() => {
+  const delayDebounce = setTimeout(() => {
+    fetchData(searchQuery, sortOrder);
+  }, 300);
+  return () => clearTimeout(delayDebounce);
+}, [searchQuery, sortOrder]);
+```
+
+### 3. Client-Side Pagination
+Since the REST API returns the entire filtered list of referrals, client-side slicing is handled dynamically. The page resets to `1` automatically on any new search filter or sorting change:
+```javascript
+const ITEMS_PER_PAGE = 10;
+const from = totalEntries === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+const to = Math.min(currentPage * ITEMS_PER_PAGE, totalEntries);
+const paginatedReferrals = referrals.slice(from - 1, to);
+```
+
+### 4. Robust Response Parser
+Handles structural variations in the response, supporting both nested data nodes and flat models to ensure deep links always load successfully:
+```javascript
+const parsedData = responseJson.data || responseJson || {};
+const referralsList = parsedData.referrals || [];
+```
 
 ---
 
 ## 📦 Getting Started
 
-### Prerequisites
+### 📋 Prerequisites
+*   Node.js (LTS v18.x or v20.x recommended)
+*   npm (v9.x or above)
 
-- Node.js (version 18.x or above recommended)
-- npm (version 9.x or above)
+### 🔧 Installation
+1.  Clone the repository and navigate into the folder:
+    ```bash
+    git clone https://github.com/gobinath-sketch/GoBusiness.git
+    cd GoBusiness
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-### Installation
+### 🚀 Running the App
+*   Start the local development server:
+    ```bash
+    npm run dev
+    ```
+    Once started, navigate to the local server URL (usually `http://localhost:5173/`).
 
-1. Install project dependencies:
-   ```bash
-   npm install
-   ```
+*   Compile a production build bundle:
+    ```bash
+    npm run build
+    ```
+    Build artifacts will compile inside the `./dist/` directory.
 
-2. Start the local development server:
-   ```bash
-   npm run dev
-   ```
-
-3. Open your browser and navigate to the address displayed (usually `http://localhost:5173/`).
-
-### Production Build
-
-To compile a minified production bundle, run:
-```bash
-npm run build
-```
-Vite will compile and output build artifacts inside the `dist/` directory.
-
----
-
-## 🔑 Test Credentials
-
-Use these credentials to sign in and open your referral dashboard:
-
-- **Email**: `admin@example.com`
-- **Password**: `admin123`
+*   Preview the production build locally:
+    ```bash
+    npm run preview
+    ```
 
 ---
 
-## 📡 API Reference
+## 🔑 Test Credentials & API Reference
 
-### 1. Sign In
-- **Method**: `POST`
-- **Endpoint**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/auth/signin`
-- **Payload**:
-  ```json
-  {
-    "email": "admin@example.com",
-    "password": "admin123"
-  }
-  ```
+Use these credentials to test the dashboard portal login:
+*   **Email**: `admin@example.com`
+*   **Password**: `admin123`
 
-### 2. Referrals Fetch
-- **Method**: `GET`
-- **Endpoint**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/referrals`
-- **Headers**:
-  - `Authorization: Bearer <jwt_token>`
-- **Query Params**:
-  - `search` (filters by name or service name)
-  - `sort` (accepts `asc` or `desc` for date sorting)
-  - `id` (gets detailed record for a specific referral)
+### REST Endpoints
+*   **Auth URL**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/auth/signin`
+*   **Referrals URL**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/referrals`
+    *   *Search Param*: `?search=<name_or_service>`
+    *   *Sort Param*: `?sort=asc|desc` (default `desc`)
+    *   *Single Item Param*: `?id=<referral_id>`
