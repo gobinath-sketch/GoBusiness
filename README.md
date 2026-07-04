@@ -37,12 +37,6 @@ graph TD
     FetchDashboard -->|Search Query / Date Sort| ReferralsAPI
     FetchDashboard -->|Client-side pagination| PageSlice[Slice array to 10-row pages]
     
-    %% Styling and colors
-    style User fill:#f8fafc,stroke:#4f46e5,stroke-width:2px
-    style Router fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px
-    style CheckCookie fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style AuthAPI fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style ReferralsAPI fill:#d1fae5,stroke:#059669,stroke-width:2px
 ```
 
 ---
