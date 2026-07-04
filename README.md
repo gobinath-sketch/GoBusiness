@@ -3,7 +3,7 @@ An enterprise-grade, secure, and responsive referral management portal built for
 
 ---
 
-## 🗺️ System Flow & Architecture
+## System Flow & Architecture
 
 Below is the high-level architecture diagram detailing the user session flow, route protection guards, and backend API interactions:
 
@@ -62,7 +62,7 @@ graph TD
 
 ---
 
-## 🏗️ Design Patterns & Implementation Choices
+## Design Patterns & Implementation Choices
 
 ### 1. Route Security Guards (`src/components/ProtectedRoute.jsx`)
 Authenticates requests before rendering protected layouts. Redirects to `/login` if `jwt_token` is not found. Similarly, redirects authenticated users visiting `/login` back to the home page `/`.
@@ -96,13 +96,13 @@ const referralsList = parsedData.referrals || [];
 
 ---
 
-## 📦 Getting Started
+## Getting Started
 
-### 📋 Prerequisites
+### Prerequisites
 *   Node.js (LTS v18.x or v20.x recommended)
 *   npm (v9.x or above)
 
-### 🔧 Installation
+### Installation
 1.  Clone the repository and navigate into the folder:
     ```bash
     git clone https://github.com/gobinath-sketch/GoBusiness.git
@@ -113,7 +113,7 @@ const referralsList = parsedData.referrals || [];
     npm install
     ```
 
-### 🚀 Running the App
+### Running the App
 *   Start the local development server:
     ```bash
     npm run dev
@@ -133,15 +133,15 @@ const referralsList = parsedData.referrals || [];
 
 ---
 
-## 🔑 Test Credentials & API Reference
+## Test Credentials & API Reference
 
 Use these credentials to test the dashboard portal login:
 *   **Email**: `admin@example.com`
 *   **Password**: `admin123`
 
 ### REST Endpoints
-*   **Auth URL**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/auth/signin`
-*   **Referrals URL**: `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/referrals`
+*   **Auth URL**: `https://-------------north-1.amazonaws.com/api/auth/signin`
+*   **Referrals URL**: `https://---------------north-1.amazonaws.com/api/referrals`
     *   *Search Param*: `?search=<name_or_service>`
     *   *Sort Param*: `?sort=asc|desc` (default `desc`)
     *   *Single Item Param*: `?id=<referral_id>`
