@@ -126,11 +126,7 @@ const referralsList = parsedData.referrals || [];
 
 ---
 
-## Test Credentials & API Reference
-
-Use these credentials to test the dashboard portal login:
-*   **Email**: `admin@example.com`
-*   **Password**: `admin123`
+## API Reference
 
 ### REST Endpoints
 *   **Auth URL**: `https://-------------north-1.amazonaws.com/api/auth/signin`
