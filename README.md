@@ -1,5 +1,5 @@
 # Go Business — Referral Dashboard
-An enterprise-grade, secure, and responsive referral management portal built for Go Business. This web application tracks partner referrals, service breakdowns, total earnings, and shareable referral links/codes.
+An enterprise-grade, secure, and responsive referral management portal built for Go Business with " AWS " api endpoints references. This web application tracks partner referrals, service breakdowns, total earnings, and shareable referral links/codes.
 
 ---
 
