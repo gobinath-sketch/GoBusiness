@@ -33,7 +33,7 @@ const ReferralDetail = () => {
 
       try {
         const response = await fetch(
-          `https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/referrals?id=${id}`,
+          `/api/referrals?id=${id}`,
           {
             method: 'GET',
             headers: {

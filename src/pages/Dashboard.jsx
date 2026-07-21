@@ -40,7 +40,7 @@ const Dashboard = () => {
     setErrorMsg('');
 
     try {
-      let url = 'https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/referrals';
+      let url = '/api/referrals';
       const params = [];
       if (query.trim()) {
         params.push(`search=${encodeURIComponent(query)}`);

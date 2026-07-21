@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        'https://v9fes04dwf.execute-api.eu-north-1.amazonaws.com/api/auth/signin',
+        '/api/auth/signin',
         {
           method: 'POST',
           headers: {
