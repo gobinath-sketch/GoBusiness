@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { MOCK_RESPONSE } from '../mockData';
 import Navbar from '../components/Navbar';
 import { 
   ArrowLeft, 
@@ -31,6 +32,19 @@ const ReferralDetail = () => {
       setLoading(true);
       setErrorState(false);
 
+      // ── Demo bypass: find row in mock data, no API call ──
+      if (token === 'demo-bypass-token') {
+        const found = MOCK_RESPONSE.referrals.find((r) => String(r.id) === String(id));
+        if (found) {
+          setReferral(found);
+        } else {
+          setErrorState(true);
+        }
+        setLoading(false);
+        return;
+      }
+
+      // ── Live API flow (untouched) ──
       try {
         const response = await fetch(
           `/api/referrals?id=${id}`,

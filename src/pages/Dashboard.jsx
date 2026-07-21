@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { MOCK_RESPONSE } from '../mockData';
 import Navbar from '../components/Navbar';
 import { 
   Search, 
@@ -39,6 +40,35 @@ const Dashboard = () => {
     setLoading(true);
     setErrorMsg('');
 
+    // ── Demo bypass: use mock data locally, no API call ──
+    if (token === 'demo-bypass-token') {
+      let list = [...MOCK_RESPONSE.referrals];
+
+      // client-side search filter
+      if (query.trim()) {
+        const q = query.toLowerCase();
+        list = list.filter(
+          (r) =>
+            r.name.toLowerCase().includes(q) ||
+            r.serviceName.toLowerCase().includes(q)
+        );
+      }
+
+      // client-side sort by date
+      list.sort((a, b) =>
+        sort === 'asc'
+          ? new Date(a.date) - new Date(b.date)
+          : new Date(b.date) - new Date(a.date)
+      );
+
+      setData(MOCK_RESPONSE);
+      setReferrals(list);
+      setCurrentPage(1);
+      setLoading(false);
+      return;
+    }
+
+    // ── Live API flow (untouched) ──
     try {
       let url = '/api/referrals';
       const params = [];
@@ -66,7 +96,7 @@ const Dashboard = () => {
         const parsedData = responseJson.data || responseJson || {};
         setData(parsedData);
         setReferrals(parsedData.referrals || []);
-        setCurrentPage(1); // Reset page on query/sort changes
+        setCurrentPage(1);
       } else {
         const statusText = response.status ? ` (Status ${response.status})` : '';
         const msg = responseJson.message || 'Failed to fetch referrals data';
